@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LinkDraft — Backlink Blueprints</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0E2438;
+    --bg-deep:#091725;
+    --grid-line:rgba(255,255,255,0.055);
+    --grid-line-strong:rgba(255,255,255,0.09);
+    --paper:#E9EEEE;
+    --paper-dim:#B9CAD2;
+    --ink:#EAF1F1;
+    --ink-dim:#8FA9BC;
+    --ink-faint:#5E7C90;
+    --accent:#E8A33D;
+    --accent-soft:rgba(232,163,61,0.15);
+    --line:#4A7A9C;
+    --line-soft:#2E5878;
+    --ok:#7FBF9E;
+    --mono:'IBM Plex Mono',monospace;
+    --sans:'IBM Plex Sans',sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+      var(--bg);
+    background-size:28px 28px, 28px 28px;
+    color:var(--ink);
+    font-family:var(--sans);
+    line-height:1.55;
+  }
+  a{color:inherit;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 28px;}
+  ::selection{background:var(--accent);color:var(--bg-deep);}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;}
+
+  /* label / eyebrow */
+  .tag{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .tag::before{
+    content:"";
+    width:16px;height:1px;
+    background:var(--accent);
+    display:inline-block;
+  }
+
+  h1,h2,h3{font-family:var(--mono);font-weight:600;margin:0;letter-spacing:-0.01em;}
+  p{color:var(--ink-dim);margin:0;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:linear-gradient(var(--bg-deep), var(--bg-deep) 85%, transparent);
+    border-bottom:1px solid var(--grid-line-strong);
+    backdrop-filter:blur(6px);
+  }
+  nav{
+    max-width:1080px;margin:0 auto;padding:16px 28px;
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .brand{
+    font-family:var(--mono);font-weight:600;font-size:16px;
+    display:flex;align-items:center;gap:9px;color:var(--ink);
+    text-decoration:none;
+  }
+  .brand .dot{width:8px;height:8px;background:var(--accent);border-radius:1px;transform:rotate(45deg);}
+  .navlinks{display:flex;gap:28px;font-size:14px;}
+  .navlinks a{text-decoration:none;color:var(--ink-dim);transition:color .15s;}
+  .navlinks a:hover{color:var(--ink);}
+  .navlinks{}
+  @media (max-width:720px){.navlinks{display:none;}}
+
+  /* ---------- HERO ---------- */
+  .hero{padding:72px 0 40px;}
+  .hero-grid{display:grid;grid-template-columns:1.1fr 1fr;gap:48px;align-items:center;}
+  @media (max-width:860px){.hero-grid{grid-template-columns:1fr;}}
+  .hero h1{
+    font-size:clamp(32px,4.6vw,50px);
+    line-height:1.08;
+    margin:18px 0 20px;
+    color:var(--paper);
+  }
+  .hero h1 em{font-style:normal;color:var(--accent);}
+  .hero p.lede{font-size:16.5px;max-width:46ch;margin-bottom:28px;}
+  .cta-row{display:flex;gap:14px;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--mono);font-size:13.5px;letter-spacing:.03em;
+    padding:13px 22px;border-radius:2px;text-decoration:none;
+    display:inline-flex;align-items:center;gap:8px;
+    transition:transform .15s, background .15s, border-color .15s;
+    border:1px solid transparent;cursor:pointer;
+  }
+  .btn-primary{background:var(--accent);color:var(--bg-deep);font-weight:600;}
+  .btn-primary:hover{transform:translateY(-1px);background:#f2b155;}
+  .btn-ghost{border-color:var(--line);color:var(--paper-dim);}
+  .btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* diagram */
+  .diagram-wrap{
+    border:1px solid var(--grid-line-strong);
+    background:rgba(255,255,255,0.02);
+    border-radius:2px;
+    padding:14px;
+    position:relative;
+  }
+  .diagram-wrap::before{
+    content:"FIG. 01 — LINK GRAPH";
+    position:absolute;top:-11px;left:14px;
+    background:var(--bg);
+    padding:0 8px;
+    font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;
+    color:var(--ink-faint);
+  }
+  svg{display:block;width:100%;height:auto;}
+  .node-label{font-family:var(--mono);font-size:9.5px;fill:var(--ink-dim);}
+  .node-label-main{font-family:var(--mono);font-size:10.5px;fill:var(--paper);font-weight:600;}
+  .draw{stroke-dasharray:300;stroke-dashoffset:300;animation:draw 1.4s ease forwards;}
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  @media (prefers-reduced-motion:reduce){.draw{animation:none;stroke-dashoffset:0;}}
+
+  /* ---------- SECTION SHELL ---------- */
+  section{padding:76px 0;border-top:1px solid var(--grid-line-strong);}
+  .sec-head{max-width:640px;margin-bottom:44px;}
+  .sec-head h2{font-size:clamp(24px,3vw,32px);color:var(--paper);margin-top:14px;}
+  .sec-head p{margin-top:12px;font-size:15.5px;}
+
+  /* ---------- SERVICES ---------- */
+  .services-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--grid-line-strong);border:1px solid var(--grid-line-strong);}
+  @media (max-width:820px){.services-grid{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:560px){.services-grid{grid-template-columns:1fr;}}
+  .svc{
+    background:var(--bg);
+    padding:26px 24px;
+    transition:background .15s;
+  }
+  .svc:hover{background:rgba(255,255,255,0.02);}
+  .svc .idx{font-family:var(--mono);font-size:11px;color:var(--ink-faint);}
+  .svc h3{font-size:16.5px;color:var(--paper);margin:10px 0 8px;}
+  .svc p{font-size:14px;}
+  .svc .meta{
+    margin-top:14px;font-family:var(--mono);font-size:11px;
+    color:var(--accent);letter-spacing:.03em;
+  }
+
+  /* ---------- PROCESS ---------- */
+  .process{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+  @media (max-width:820px){.process{grid-template-columns:repeat(2,1fr);}}
+  @media (max-width:480px){.process{grid-template-columns:1fr;}}
+  .step{position:relative;padding-top:8px;}
+  .step .num{
+    font-family:var(--mono);font-size:34px;color:transparent;
+    -webkit-text-stroke:1px var(--line);
+    display:block;margin-bottom:6px;
+  }
+  .step h3{font-size:15px;color:var(--paper);margin-bottom:8px;}
+  .step p{font-size:13.5px;}
+  .step-line{position:absolute;top:22px;left:44px;right:-24px;height:1px;background:var(--line-soft);}
+  @media (max-width:820px){.step-line{display:none;}}
+
+  /* ---------- PACKAGES ---------- */
+  .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+  @media (max-width:860px){.pricing{grid-template-columns:1fr;}}
+  .plan{
+    border:1px solid var(--grid-line-strong);
+    padding:28px 24px;
+    display:flex;flex-direction:column;gap:16px;
+    position:relative;
+    background:rgba(255,255,255,0.015);
+  }
+  .plan.featured{border-color:var(--accent);}
+  .plan.featured::before{
+    content:"MOST ORDERED";
+    position:absolute;top:-11px;left:24px;
+    background:var(--bg);color:var(--accent);
+    font-family:var(--mono);font-size:10px;letter-spacing:.12em;
+    padding:0 8px;
+  }
+  .plan h3{font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-dim);}
+  .price{font-family:var(--mono);font-size:34px;color:var(--paper);}
+  .price span{font-size:13px;color:var(--ink-faint);font-weight:400;}
+  .plan ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;}
+  .plan li{font-size:13.5px;color:var(--ink-dim);display:flex;gap:9px;align-items:flex-start;}
+  .plan li::before{content:"—";color:var(--accent);flex-shrink:0;}
+  .plan .btn{justify-content:center;margin-top:6px;}
+  .price-note{font-size:12px;color:var(--ink-faint);font-style:italic;}
+
+  /* ---------- SAMPLE REPORT ---------- */
+  .report{
+    border:1px solid var(--grid-line-strong);
+    overflow:hidden;
+    background:var(--bg-deep);
+  }
+  table{width:100%;border-collapse:collapse;font-size:13px;}
+  thead th{
+    text-align:left;padding:12px 16px;
+    font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    color:var(--ink-faint);border-bottom:1px solid var(--grid-line-strong);
+  }
+  tbody td{padding:11px 16px;border-bottom:1px solid var(--grid-line);color:var(--ink-dim);}
+  tbody tr:last-child td{border-bottom:none;}
+  .pill{
+    font-family:var(--mono);font-size:10.5px;padding:3px 8px;border-radius:2px;
+    display:inline-block;letter-spacing:.03em;
+  }
+  .pill-live{background:rgba(127,191,158,0.14);color:var(--ok);}
+  .pill-idx{background:var(--accent-soft);color:var(--accent);}
+
+  /* ---------- FAQ ---------- */
+  .faq-item{border-bottom:1px solid var(--grid-line-strong);}
+  .faq-q{
+    width:100%;text-align:left;background:none;border:none;color:var(--paper);
+    font-family:var(--sans);font-size:15.5px;font-weight:600;
+    padding:20px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;
+  }
+  .faq-q .plus{font-family:var(--mono);color:var(--accent);font-size:18px;flex-shrink:0;transition:transform .2s;}
+  .faq-item.open .plus{transform:rotate(45deg);}
+  .faq-a{max-height:0;overflow:hidden;transition:max-height .25s ease;}
+  .faq-a p{font-size:14.5px;padding-bottom:20px;max-width:66ch;}
+  .faq-item.open .faq-a{max-height:220px;}
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:56px;}
+  @media (max-width:820px){.contact-grid{grid-template-columns:1fr;}}
+  form{display:flex;flex-direction:column;gap:16px;}
+  label{font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px;display:block;}
+  input,select,textarea{
+    width:100%;background:var(--bg-deep);border:1px solid var(--line-soft);
+    color:var(--ink);padding:11px 12px;font-family:var(--sans);font-size:14px;
+    border-radius:2px;
+  }
+  input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:none;}
+  textarea{resize:vertical;min-height:90px;}
+  .field{display:flex;flex-direction:column;}
+  .form-note{font-size:12.5px;color:var(--ink-faint);margin-top:-2px;}
+
+  .contact-side .tag{margin-bottom:14px;}
+  .contact-side h2{font-size:26px;color:var(--paper);margin-bottom:14px;}
+  .contact-side p{margin-bottom:14px;font-size:14.5px;}
+  .contact-side ul{list-style:none;padding:0;margin:20px 0 0;display:flex;flex-direction:column;gap:10px;}
+  .contact-side li{font-size:13.5px;color:var(--ink-dim);display:flex;gap:10px;}
+  .contact-side li::before{content:"▸";color:var(--accent);}
+
+  footer{
+    border-top:1px solid var(--grid-line-strong);
+    padding:28px 0;font-family:var(--mono);font-size:12px;color:var(--ink-faint);
+    display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <a class="brand" href="#top"><span class="dot"></span>LINKDRAFT</a>
+    <div class="navlinks">
+      <a href="#services">Services</a>
+      <a href="#process">Process</a>
+      <a href="#packages">Packages</a>
+      <a href="#report">Sample Report</a>
+      <a href="#faq">FAQ</a>
+      <a href="#contact">Order</a>
+    </div>
+  </nav>
+</header>
+
+<main id="top">
+
+  <!-- ============ HERO ============ -->
+  <section class="hero" style="border-top:none;">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="tag">Tier-2 link builds</span>
+        <h1>Blueprints for your <em>link graph</em>.</h1>
+        <p class="lede">We build and deliver web 2.0 properties, profile links, wiki backlinks, article directory placements, and social bookmarks — diversified, documented, and shipped as a package with a live report.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#packages">View packages</a>
+          <a class="btn btn-ghost" href="https://www.claudeusercontent.com/?domain=claude.ai&parentOrigin=https%3A%2F%2Fclaude.ai&errorReportingMode=parent&formattedSpreadsheets=true#contact">See a sample report</a>
+        </div>
+      </div>
+      <div class="diagram-wrap">
+        <svg viewBox="0 0 380 300" xmlns="http://www.w3.org/2000/svg">
+          <!-- connecting lines -->
+          <g stroke="var(--line)" stroke-width="1" fill="none">
+            <path class="draw" d="M190,150 L80,60" style="animation-delay:.1s"/>
+            <path class="draw" d="M190,150 L300,60" style="animation-delay:.25s"/>
+            <path class="draw" d="M190,150 L60,160" style="animation-delay:.4s"/>
+            <path class="draw" d="M190,150 L60,240" style="animation-delay:.55s"/>
+            <path class="draw" d="M190,150 L300,230" style="animation-delay:.7s"/>
+          </g>
+          <!-- satellite nodes -->
+          <g>
+            <circle cx="80" cy="60" r="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="92" y="58" class="node-label">WEB 2.0</text>
+            <text x="92" y="70" class="node-label" fill="var(--ink-faint)">property</text>
+
+            <circle cx="300" cy="60" r="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="245" y="58" class="node-label">PROFILE</text>
+            <text x="245" y="70" class="node-label" fill="var(--ink-faint)">link</text>
+
+            <circle cx="60" cy="160" r="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="10" y="150" class="node-label">WIKI</text>
+            <text x="10" y="162" class="node-label" fill="var(--ink-faint)">backlink</text>
+
+            <circle cx="60" cy="240" r="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="10" y="255" class="node-label">ARTICLE</text>
+            <text x="10" y="267" class="node-label" fill="var(--ink-faint)">directory</text>
+
+            <circle cx="300" cy="230" r="5" fill="var(--bg)" stroke="var(--accent)" stroke-width="1.5"/>
+            <text x="235" y="250" class="node-label">SOCIAL</text>
+            <text x="235" y="262" class="node-label" fill="var(--ink-faint)">bookmark</text>
+          </g>
+          <!-- main node -->
+          <circle cx="190" cy="150" r="16" fill="var(--bg)" stroke="var(--paper)" stroke-width="1.5"/>
+          <circle cx="190" cy="150" r="3" fill="var(--paper)"/>
+          <text x="164" y="185" class="node-label-main">YOUR TARGET URL</text>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section id="services">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="tag">What we build</span>
+        <h2>Five link types, built to spec</h2>
+        <p>Each service is sold on its own or bundled into a package. All builds are diversified across domains and IPs, and used as tier-2 support to help your primary link profile get discovered and indexed — not as a substitute for on-page SEO or content.</p>
+      </div>
+      <div class="services-grid">
+        <div class="svc">
+          <span class="idx">01</span>
+          <h3>Web 2.0 properties</h3>
+          <p>Branded mini-sites on platforms like WordPress.com, Blogger, and Wix, built out with real content and an embedded link.</p>
+          <div class="meta">Delivered as live URLs</div>
+        </div>
+        <div class="svc">
+          <span class="idx">02</span>
+          <h3>Profile backlinks</h3>
+          <p>Forum, community, and CMS user-profile pages created and linked back, spread across unrelated niches and domains.</p>
+          <div class="meta">Bulk-friendly</div>
+        </div>
+        <div class="svc">
+          <span class="idx">03</span>
+          <h3>Wiki backlinks</h3>
+          <p>Edits and citations placed on open wiki platforms that accept external references.</p>
+          <div class="meta">Slower to place</div>
+        </div>
+        <div class="svc">
+          <span class="idx">04</span>
+          <h3>Article directories</h3>
+          <p>Short original articles submitted to directory sites with an author bio link back to your target URL.</p>
+          <div class="meta">Includes 300–500 word article</div>
+        </div>
+        <div class="svc">
+          <span class="idx">05</span>
+          <h3>Social bookmarks</h3>
+          <p>Your URL saved and tagged across bookmarking platforms to support fast discovery and initial indexing.</p>
+          <div class="meta">Fastest turnaround</div>
+        </div>
+        <div class="svc">
+          <span class="idx">06</span>
+          <h3>Custom mix</h3>
+          <p>Tell us your target anchors and ratio — we'll assemble a blend across all five types to match your link profile.</p>
+          <div class="meta">Ask for a quote</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS ============ -->
+  <section id="process">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="tag">How an order runs</span>
+        <h2>From brief to live report</h2>
+      </div>
+      <div class="process">
+        <div class="step">
+          <span class="step-line"></span>
+          <span class="num">01</span>
+          <h3>You submit URLs & anchors</h3>
+          <p>Target link(s), anchor text variations, and your preferred link mix.</p>
+        </div>
+        <div class="step">
+          <span class="step-line"></span>
+          <span class="num">02</span>
+          <h3>We build across properties</h3>
+          <p>Placements go out across diversified, unrelated domains — no single footprint.</p>
+        </div>
+        <div class="step">
+          <span class="step-line"></span>
+          <span class="num">03</span>
+          <h3>Links are published & pinged</h3>
+          <p>Each link is submitted for indexing once it's live.</p>
+        </div>
+        <div class="step">
+          <span class="num">04</span>
+          <h3>Report delivered</h3>
+          <p>You get a spreadsheet of every live URL, link type, and status.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PACKAGES ============ -->
+  <section id="packages">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="tag">Packages</span>
+        <h2>Priced by volume</h2>
+        <p>Sample pricing below — adjust to your own cost basis and margin before publishing.</p>
+      </div>
+      <div class="pricing">
+        <div class="plan">
+          <h3>Starter</h3>
+          <div class="price">$9<span> / order</span></div>
+          <ul>
+            <li>500 mixed links (Web2.0 blog, profile, bookmark, wiki)</li>
+            <li>1 target URL, up to 5 anchors</li>
+            <li>Delivery in 3–5 days</li>
+            <li>CSV report of live URLs</li>
+          </ul>
+          <a class="btn btn-ghost" href="#contact">Order Starter</a>
+        </div>
+        <div class="plan featured">
+          <h3>Growth</h3>
+          <div class="price">$49<span> / order</span></div>
+          <ul>
+            <li>3500 mixed links across all 5 types</li>
+            <li>Up to 3 target URLs, 15 anchors</li>
+            <li>Delivery in 5–7 days</li>
+            <li>Includes 10 DA30+ Do-follow Links</li>
+            <li>CSV report + indexing status check</li>
+          </ul>
+          <a class="btn btn-primary" href="#contact">Order Growth</a>
+        </div>
+        <div class="plan">
+          <h3>Bulk / Agency</h3>
+          <div class="price">$0.15<span> / link</span></div>
+          <ul>
+            <li>1,000+ links, custom type ratio</li>
+            <li>Unlimited target URLs</li>
+            <li>Dedicated delivery schedule</li>
+            <li>White-label reporting for resellers</li>
+          </ul>
+          <a class="btn btn-ghost" href="#contact">Get a quote</a>
+        </div>
+      </div>
+      <p class="price-note" style="margin-top:18px;">Placeholder pricing — replace with your own rates.</p>
+    </div>
+  </section>
+
+  <!-- ============ SAMPLE REPORT ============ -->
+  <section id="report">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="tag">Proof of delivery</span>
+        <h2>What your report looks like</h2>
+        <p>Every order ships with a spreadsheet like this — one row per link, so nothing is a black box.</p>
+      </div>
+      <div class="report">
+        <table>
+          <thead>
+            <tr><th>Live URL</th><th>Type</th><th>Anchor</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>sitename.wordpress.com/…</td><td>Web 2.0</td><td>brand name</td><td><span class="pill pill-live">Live</span></td></tr>
+            <tr><td>community-forum.net/profile/…</td><td>Profile</td><td>exact match</td><td><span class="pill pill-live">Live</span></td></tr>
+            <tr><td>wikidot-example.com/page/…</td><td>Wiki</td><td>naked URL</td><td><span class="pill pill-idx">Indexing</span></td></tr>
+            <tr><td>articlebase-example.com/post/…</td><td>Article dir.</td><td>partial match</td><td><span class="pill pill-live">Live</span></td></tr>
+            <tr><td>bookmark-example.com/save/…</td><td>Social bookmark</td><td>brand name</td><td><span class="pill pill-live">Live</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FAQ ============ -->
+  <section id="faq">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="tag">Before you order</span>
+        <h2>Straight answers</h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item">
+          <button class="faq-q">Will this rank my site on page one? <span class="plus">+</span></button>
+          <div class="faq-a"><p>No single link package guarantees rankings. These links work best as supporting/tier-2 signals alongside real content and stronger primary links — treat them as one part of a broader strategy, not the whole thing.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Is this safe for my main site? <span class="plus">+</span></button>
+          <div class="faq-a"><p>We build with diversified domains and natural-looking pacing to reduce footprint, but any bulk link building carries some risk. We recommend using these as tier-2 support rather than pointing them directly at a site you can't afford to risk.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Manual or automated builds? <span class="plus">+</span></button>
+          <div class="faq-a"><p>A mix — bulk packages use managed software for speed, wiki and article placements are done by hand since they need real content and approval.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">What if some links get taken down? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Some churn is normal for this link type. Ask about our replacement policy when you order — most packages include a redo window.</p></div>
+        </div>
+        <div class="faq-item">
+          <button class="faq-q">Can I resell these as an agency? <span class="plus">+</span></button>
+          <div class="faq-a"><p>Yes — the Bulk/Agency tier includes white-label reporting with no branding, so you can pass it straight to your own clients.</p></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CONTACT ============ -->
+  <section id="contact">
+    <div class="wrap contact-grid">
+      <div class="contact-side">
+        <span class="tag">Place an order</span>
+        <h2>Send us your target URL</h2>
+        <p>Fill in your details and we'll confirm scope, timeline, and price before anything goes live.</p>
+        <ul>
+          <li>Reply within 1 business day</li>
+          <li>No links published without your sign-off</li>
+          <li>Report delivered on completion</li>
+          <li></li>
+          <li>Email: mdsakibkpi@gmail.com</li>
+          <li>WhatsApp: +880 1762 002981</li>
+        </ul>
+      </div>
+      <form id="orderForm">
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" name="name" type="text" required>
+        </div>
+        <div class="field">
+          <label for="email">Email</label>
+          <input id="email" name="email" type="email" required>
+        </div>
+        <div class="field">
+          <label for="url">Target URL</label>
+          <input id="url" name="url" type="url" placeholder="https://" required>
+        </div>
+        <div class="field">
+          <label for="package">Package</label>
+          <select id="package" name="package">
+            <option>Starter — $9</option>
+            <option>Growth — $49</option>
+            <option>Bulk / Agency — custom</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="notes">Anchors & notes</label>
+          <textarea id="notes" name="notes" placeholder="Preferred anchor text, link mix, deadline..."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send order request</button>
+        <p class="form-note">This opens your email client with the details pre-filled — set your address in the script below.</p>
+      </form>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap" style="width:100%;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+    <span>© 2026 LinkDraft. All right reserved.</span>
+  </div>
+</footer>
+
+<script>
+  // FAQ accordion
+  document.querySelectorAll('.faq-item').forEach(item => {
+    item.querySelector('.faq-q').addEventListener('click', () => {
+      const wasOpen = item.classList.contains('open');
+      document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+      if(!wasOpen) item.classList.add('open');
+    });
+  });
+
+  // Contact form -> mailto fallback (replace with a real backend/form service when ready)
+  document.getElementById('orderForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const url = document.getElementById('url').value;
+    const pkg = document.getElementById('package').value;
+    const notes = document.getElementById('notes').value;
+    const subject = encodeURIComponent('New backlink order: ' + pkg);
+    const body = encodeURIComponent(
+      'Name: ' + name + '\n' +
+      'Email: ' + email + '\n' +
+      'Target URL: ' + url + '\n' +
+      'Package: ' + pkg + '\n' +
+      'Notes: ' + notes
+    );
+    window.location.href = 'mailto:you@example.com?subject=' + subject + '&body=' + body;
+  });
+</script>
+
+</body>
+</html>
